@@ -131,7 +131,50 @@ t.test(ivee_lobster)
 
 #### Two-sample t-test to compare means
 
+We want to ask: Is there a significant difference in lobster lengths at Naples and Mohawk reefs?
+
+We've done our necessary exploratory analyses to determine that a 2-sample t-test for means comparison is appropriate.
+
+```{r}
+napl_sample <- lobster_tidy %>% 
+  filter(site == "NAPL") %>% 
+  pull(size_mm)
+
+mohk_sample <- lobster_tidy %>% 
+  filter(site == "MOHK") %>% 
+  pull(size_mm)
+
+mn_ttest <- t.test(napl_sample, mohk_sample)
+mn_ttest
+
+```
+
+There is a significant difference in lobster lenghts between Naples and Mohawk Reef (t(df) = statistic, p < 0.001, alpha = 0.005)
+
+```{r}
+lobster_mn <- lobster_tidy %>% 
+  filter(site %in% c("NAPL", "MOHK"))
+
+mn_ttest2 <- t.test(size_mm ~ site, data = lobster_mn)
+
+mn_ttest2
+
+mn_ttest2$p.value
+mn_ttest2$statistic
+```
+
+Here is the p-value: `r mn_ttest2$p.value`
+
+Here is my t-statistic: `r nm_ttest2$statistic`
+
+#### Now: a heatmap!
+
 ```{r}
 
+lobster_ys <- lobster_parse_date %>% 
+  count(obs_year, site)
+
+ggplot(lobster_ys, aes(x = obs_year, y = site)) +
+  geom_tile(aes(fill = n))
 ```
 
